@@ -233,5 +233,10 @@ public protocol PanModalPresentable: AnyObject {
      Default value is an empty implementation.
      */
     func panModalDidDismiss()
+
+    /**
+     Notifies the delegate transition progress
+     */
+    func dimmedViewState(progress: CGFloat)
 }
 #endif

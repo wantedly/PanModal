@@ -84,6 +84,8 @@ open class PanModalPresentationController: UIPresentationController {
      */
     private var longFormYPosition: CGFloat = 0
 
+    private var dimStateObserver: NSKeyValueObservation?
+
     /**
      Determine anchored Y postion based on the `anchorModalToLongForm` flag
      */
@@ -116,6 +118,17 @@ open class PanModalPresentationController: UIPresentationController {
                 self?.dismissPresentedViewController()
             }
         }
+
+        dimStateObserver = view.observe(\.alpha, changeHandler: { [weak self] (view, progress) in
+            let value: CGFloat = {
+                switch view.dimState {
+                case .max: return 1.0
+                case .off: return 0
+                case .percent(let value): return value
+                }
+            }()
+            self?.presentable?.dimmedViewState(progress: value)
+        })
         return view
     }()
 
@@ -163,6 +176,7 @@ open class PanModalPresentationController: UIPresentationController {
 
     deinit {
         scrollObserver?.invalidate()
+        dimStateObserver?.invalidate()
     }
 
     // MARK: - Lifecycle
