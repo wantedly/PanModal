@@ -652,6 +652,7 @@ private extension PanModalPresentationController {
             self?.isPresentedViewAnimating = true
         }, config: presentable) { [weak self] didComplete in
             self?.isPresentedViewAnimating = !didComplete
+            self?.presentable?.didSnapTransition()
         }
     }
 

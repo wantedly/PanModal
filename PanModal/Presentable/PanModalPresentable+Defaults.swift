@@ -126,6 +126,10 @@ public extension PanModalPresentable where Self: UIViewController {
     }
 
     func dimmedViewState(progress: CGFloat) {
+
+    }
+
+    func didSnapTransition() {
         
     }
 }

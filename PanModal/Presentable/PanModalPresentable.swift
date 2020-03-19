@@ -221,6 +221,13 @@ public protocol PanModalPresentable: AnyObject {
     func willTransition(to state: PanModalPresentationController.PresentationState)
 
     /**
+    Notifies the delegate that the pan modal is completed transition.
+
+    Default value is an empty implementation.
+    */
+    func didSnapTransition()
+
+    /**
      Notifies the delegate that the pan modal is about to be dismissed.
 
      Default value is an empty implementation.
@@ -236,6 +243,8 @@ public protocol PanModalPresentable: AnyObject {
 
     /**
      Notifies the delegate transition progress
+
+     Default value is an empty implementation.
      */
     func dimmedViewState(progress: CGFloat)
 }
