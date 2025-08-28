@@ -115,7 +115,7 @@ open class PanModalPresentationController: UIPresentationController {
         }
         view.didTap = { [weak self] _ in
             if self?.presentable?.allowsTapToDismiss == true {
-                self?.dismissPresentedViewController()
+                self?.presentedViewController.dismiss(animated: true)
             }
         }
 
@@ -206,7 +206,14 @@ open class PanModalPresentationController: UIPresentationController {
         })
     }
 
+    override public func presentationTransitionDidEnd(_ completed: Bool) {
+        if completed { return }
+
+        backgroundView.removeFromSuperview()
+    }
+
     override public func dismissalTransitionWillBegin() {
+        presentable?.panModalWillDismiss()
 
         guard let coordinator = presentedViewController.transitionCoordinator else {
             backgroundView.dimState = .off
@@ -224,10 +231,10 @@ open class PanModalPresentationController: UIPresentationController {
         })
     }
 
-    override public func presentationTransitionDidEnd(_ completed: Bool) {
-        if completed { return }
-
-        backgroundView.removeFromSuperview()
+    override public func dismissalTransitionDidEnd(_ completed: Bool) {
+        if !completed { return }
+        
+        presentable?.panModalDidDismiss()
     }
 
     /**
@@ -530,7 +537,7 @@ private extension PanModalPresentationController {
                     transition(to: .shortForm)
 
                 } else {
-                    dismissPresentedViewController()
+                    presentedViewController.dismiss(animated: true)
                 }
 
             } else {
@@ -548,7 +555,7 @@ private extension PanModalPresentationController {
                     transition(to: .shortForm)
 
                 } else {
-                    dismissPresentedViewController()
+                    presentedViewController.dismiss(animated: true)
                 }
             }
         }
@@ -687,16 +694,6 @@ private extension PanModalPresentationController {
         guard let nearestVal = values.min(by: { abs(number - $0) < abs(number - $1) })
             else { return number }
         return nearestVal
-    }
-
-    /**
-     Dismiss presented view
-     */
-    func dismissPresentedViewController() {
-        presentable?.panModalWillDismiss()
-        presentedViewController.dismiss(animated: true) { [weak self] in
-            self?.presentable?.panModalDidDismiss()
-        }
     }
 }
 
